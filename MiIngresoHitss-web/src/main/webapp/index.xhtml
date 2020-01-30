@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>MiIngresoHitss</title>
+    </h:head>
+    <h:body>
+
+
+
+        <p:growl id="msgs" showDetail="true" />
+
+
+        <p:tabView id="tabs">
+
+            <p:tab title="Productos">
+                <h:form id="nuevoproducto">    
+                    <h:panelGrid columns="2">
+
+                        <p:outputLabel for="nombreProducto" value="Nombre del producto" />
+                        <p:inputText id="nombreProducto" value="#{productoManagedBean.nombreProducto}" />
+
+                        <p:outputLabel for="descripcionProducto" value="Descripcion del producto" />
+                        <p:inputTextarea id="descripcionProducto" value="#{productoManagedBean.descripcionProducto}" />                       
+
+                        <p:outputLabel for="precioProducto" value="Precio" />
+                        <p:inputText id="precioProducto" value="#{productoManagedBean.precioProducto}" />
+
+                        <p:inputText id="idProducto" type="hidden" value="#{productoManagedBean.idProducto}" />
+                        <p:commandButton value="Registrar"  update="tablaProductos" actionListener="#{productoManagedBean.guardarProducto()}" icon="pi pi-check" />
+
+                    </h:panelGrid>  
+                    <h:panelGrid>
+                        <p:dataTable id= "tablaProductos" var="producto" value="#{productoManagedBean.listarProductos()}">
+
+
+                            <p:column headerText="Nombre">
+                                <h:outputText value="#{producto.nombreProducto}" />
+                            </p:column>
+
+                            <p:column headerText="Descripcion">
+                                <h:outputText value="#{producto.descripcionProducto}" />
+                            </p:column>
+
+                            <p:column headerText="Precio">
+                                <h:outputText value="#{producto.precioProducto}" />
+                            </p:column>
+                            <p:column headerText="Editar">
+                                <p:commandButton value="Editar"  update="tabs:nuevoproducto" actionListener="#{productoManagedBean.generarInformacion(producto)}"  />
+                            </p:column>
+                        </p:dataTable>
+
+
+                    </h:panelGrid>
+                </h:form>
+            </p:tab>
+
+            <p:tab title="Clientes">
+                <h:form id="nuevocliente">     
+                    <h:panelGrid columns="2" >
+
+
+
+                        <p:outputLabel for="nombreCliente" value="Nombre del cliente" />
+                        <p:inputText id="nombreCliente" value="#{clienteManagedBean.nombreCompleto}" />
+
+
+
+                        <p:outputLabel for="tipoDoc" value="Tipo Documento" />
+                        <h:selectOneMenu id="tipoDoc" value="#{clienteManagedBean.tipoDocumento}" >
+                            <f:selectItems value="#{clienteManagedBean.listaDocs}" />
+                        </h:selectOneMenu>
+
+
+                        <p:outputLabel for="numeroDocumento" value="Numero Documento" />
+                        <p:inputText id="numeroDocumento"  value="#{clienteManagedBean.numDocumento}" />                        
+
+
+                        <p:inputText id="idCliente" type="hidden" value="#{clienteManagedBean.idCliente}" />
+                        <p:commandButton value="Registrar" update="tablaClientes"  actionListener="#{clienteManagedBean.guardarCliente()}"  />
+                    </h:panelGrid>  
+
+                    <h:panelGrid>
+                        <p:dataTable id= "tablaClientes" var="cliente" value="#{clienteManagedBean.listarClientes()}">
+                            <p:column headerText="Nombre">
+                                <h:outputText value="#{cliente.nombreCompleto}" />
+                            </p:column>
+
+                            <p:column headerText="Tipo Documento">
+                                <h:outputText value="#{cliente.tipoDocumento}" />
+                            </p:column>
+
+                            <p:column headerText="Numero Documento">
+                                <h:outputText value="#{cliente.numDocumento}" />
+                            </p:column>
+                            <p:column headerText="Editar">
+                                <p:commandButton value="Editar"  update="tabs:nuevocliente" actionListener="#{clienteManagedBean.generarInformacion(cliente)}"  />
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                </h:form>
+            </p:tab>
+
+
+
+            <p:tab title="Carrito">
+                <h:form id="carritoCompra">     
+                    <h:panelGrid columns="2" >
+
+                        <p:dataTable id= "tablaProductosCarrito" var="producto" value="#{productoManagedBean.listarProductos()}">
+                            <p:column headerText="Nombre">
+                                <h:outputText value="#{producto.nombreProducto}" />
+                            </p:column>
+                            <p:column headerText="Acciones">
+
+
+                                <p:commandButton value="[+]" actionListener="#{ventaManagedBean.addProducto(producto)}"  update="tabs:carritoCompra:tablaProductosVenta" style="margin-right:20px;">
+                                </p:commandButton> 
+                                <p:commandButton value="[-]" actionListener="#{ventaManagedBean.removeProducto(producto)}"  update="tabs:carritoCompra:tablaProductosVenta" style="margin-right:20px;">
+
+                                </p:commandButton> 
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:dataTable id= "tablaProductosVenta" var="venta" value="#{ventaManagedBean.listaventas}">
+
+
+                            <p:column headerText="Producto">
+                                <h:outputText value="#{venta.producto.nombreProducto}" />
+                            </p:column>
+                            <p:column headerText="Cantidad">
+                                <h:outputText value="#{venta.cantidad}" />
+                            </p:column>
+                            <p:column headerText="Precio">
+                                <h:outputText value="#{venta.cantidad*venta.producto.precioProducto}" />
+                            </p:column>
+                        </p:dataTable>
+
+
+
+                        <h:outputText value="Cliente" />
+
+                        <h:selectOneMenu value="#{ventaManagedBean.idCliente}">     
+                            <f:selectItems value="#{clienteManagedBean.listarClientes()}" var="cliente" itemLabel="#{cliente.nombreCompleto}" itemValue="#{cliente.idCliente}" />
+                        </h:selectOneMenu>  
+
+
+
+                        <p:commandButton value="Realizar Venta" actionListener="#{ventaManagedBean.realizarVenta()}"  update="tabs:carritoCompra:tablaProductosVenta" style="margin-right:20px;">
+
+                        </p:commandButton> 
+
+
+                    </h:panelGrid>  
+
+
+                </h:form>
+            </p:tab>
+        </p:tabView>
+    </h:body>
+</html>
+
